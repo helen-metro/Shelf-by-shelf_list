@@ -13,10 +13,6 @@ import add_page_break
 from category import Categories, Exceptional_categories, Path, Save_data_folder, Data_folder
 
 
-# Assign folder path
-date_folder = '2026_10_05'
-
-
 
 def preprocessing_stage(path, 
                         input_data_folder, 
@@ -223,16 +219,18 @@ def split_items_to_shelf(df:pd.DataFrame,
 
 
 
-def main():
+def run_splitting_process(branchnumber:int, date_folder:str):
     """
     """
     path = Path
     data = Data_folder
     save_data = Save_data_folder
-    
+
     items = preprocessing_stage(path, data,
                                 save_data, 
                                 date_folder)
+
+    items = utils.filter_items_by_branch(items, branchnumber)
 
     # Categorize items
     items_with_category = categorize_items_by_categories(items, 
@@ -250,5 +248,3 @@ def main():
 
 
 
-if __name__ == "__main__":
-    main()
