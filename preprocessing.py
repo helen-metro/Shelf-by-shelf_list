@@ -58,8 +58,12 @@ def categorize_items_by_categories(data: pd.DataFrame,
                                    exceptional_categories: list):
     """
     """
-    data['Category'] = np.nan
+    # Create a column for `Category` and assign NAN at first 
+    data['Category'] = pd.NA 
+
+    # Extract only selected columns
     df = data[['CN', 'ITEM', 'LOCNAME', 'MEDNAME', 'Category', 'AUTHOR']]
+
     df.rename(columns={'LOCNAME': 'LOCATION', 
                        'MEDNAME': 'MEDIA'}, inplace=True)
 
@@ -69,10 +73,10 @@ def categorize_items_by_categories(data: pd.DataFrame,
         value = list(categories[key].keys())
         print(f"{key}: {value}")
         if len(value) == 1: 
-             df.loc[(df[value[0]].isin(categories[key][value[0]])) & 
+            df.loc[(df[value[0]].isin(categories[key][value[0]])) & 
                     (df['Category'].isna()), 'Category'] = key
         elif len(value) == 2:
-             df.loc[(df[value[0]].isin(categories[key][value[0]])) & 
+            df.loc[(df[value[0]].isin(categories[key][value[0]])) & 
                     (df[value[1]].isin(categories[key][value[1]])) & 
                     (df['Category'].isna()), 'Category'] = key
     
@@ -225,8 +229,9 @@ def run_splitting_process(branchnumber:int, date_folder:str):
     path = Path
     data = Data_folder
     save_data = Save_data_folder
+    input_data_folder = f"{data}/{date_folder}"
 
-    items = preprocessing_stage(path, data,
+    items = preprocessing_stage(path, input_data_folder,
                                 save_data, 
                                 date_folder)
 
@@ -238,9 +243,9 @@ def run_splitting_process(branchnumber:int, date_folder:str):
                                                          Exceptional_categories)
 
     try: 
-        shelf_category = pd.read_excel('Shelf_by_Category.xlsx')
+        shelf_category = pd.read_excel(f'{path}/{input_data_folder}/Shelf_by_Category.xlsx')
     except: 
-        shelf_category = pd.read_csv('Shelf_by_Category.csv')
+        shelf_category = pd.read_csv(f'{path}/{input_data_folder}/Shelf_by_Category.csv')
     
     split_items_to_shelf(items_with_category, 
                          shelf_category, 

@@ -19,7 +19,7 @@ def load_csv_file(file):
     try: 
         return pd.read_csv(file)
     except:
-        return 0
+        print(f"Cannot load {file}!!!")
 
 
 def filter_items_by_branch(data:pd.DataFrame, branchnumber:int):
