@@ -62,7 +62,8 @@ def categorize_items_by_categories(data: pd.DataFrame,
     data['Category'] = pd.NA 
 
     # Extract only selected columns
-    df = data[['CN', 'ITEM', 'LOCNAME', 'MEDNAME', 'Category', 'AUTHOR']]
+    df = data[['CN', 'ITEM', 'LOCNAME', 'MEDNAME', 
+               'Category', 'AUTHOR', 'LOCCODE']]
 
     df.rename(columns={'LOCNAME': 'LOCATION', 
                        'MEDNAME': 'MEDIA'}, inplace=True)
@@ -249,7 +250,7 @@ def run_splitting_process(branchnumber:int, date_folder:str):
     
     split_items_to_shelf(items_with_category, 
                          shelf_category, 
-                         f'{save_data}/{date_folder}')
+                         f'{path}/{save_data}/{date_folder}')
 
 
 
