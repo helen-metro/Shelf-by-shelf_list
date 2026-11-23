@@ -10,7 +10,8 @@ import zipfile
 
 import utils 
 import add_page_break
-from category import Categories, Exceptional_categories, Path, Save_data_folder, Data_folder
+from category import Categories, Exceptional_categories 
+from config import Path, Save_data_folder, Data_folder
 
 
 

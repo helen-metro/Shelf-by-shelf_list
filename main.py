@@ -2,10 +2,6 @@ import os
 import argparse
 import preprocessing
 
-# from category import Path, Save_data_folder, Data_folder
-# from category import Categories, Exceptional_categories
-
-
 
 def main():
     """
