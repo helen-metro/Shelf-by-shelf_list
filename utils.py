@@ -1,4 +1,5 @@
 import os
+import re 
 import pandas as pd
 
 
@@ -27,3 +28,14 @@ def filter_items_by_branch(data:pd.DataFrame, branchnumber:int):
     Filter item data by branchnumber
     """
     return data[data['BRANCHNUMBER'] == branchnumber].reset_index()
+
+
+def extract_or_keep_value(value):
+    """
+    """
+    str_value = str(value)
+
+    if re.match(r"^[A-Za-z]", str_value):
+        match = re.match(r"^[A-Za-z]+", str_value)
+        return match.group(0) if match else str_value
+    return str_value

@@ -64,7 +64,8 @@ def categorize_items_by_categories(data: pd.DataFrame,
 
     # Extract only selected columns
     df = data[['CN', 'ITEM', 'LOCNAME', 'MEDNAME', 
-               'Category', 'AUTHOR', 'LOCCODE']]
+               'Category', 'AUTHOR', 'LOCCODE',
+               'TITLE']]
 
     df.rename(columns={'LOCNAME': 'LOCATION', 
                        'MEDNAME': 'MEDIA'}, inplace=True)
@@ -115,9 +116,11 @@ def split_items_to_shelf(df:pd.DataFrame,
     for category, total_shelf in zip(shelf_category['Category'], shelf_category['Total']):
         print(category, total_shelf)
 
+        """
         # Skip category that do NOT have assigned shelf
         if total_shelf == 0:
             continue
+        """
 
         # Extract only items in the current category
         split_items = df_copy[df_copy['Category'] == category]
@@ -129,7 +132,34 @@ def split_items_to_shelf(df:pd.DataFrame,
         # Drop all extracted items in the current category in the main df 
         df_copy.drop(split_items.index, inplace=True)
 
-        if category == 'Audio':
+        if category in ['JFiction', 'YA', 'SEQ (High/Middle)']:
+            # Sort items by `Author`
+            split_items = split_items.sort_values(by=['AUTHOR', 'CN'])
+
+        elif category in ['Early']:
+            # Sort items by `CN` and `Title`
+            split_items = split_items.sort_values(by=['AUTHOR', 'TITLE'])
+
+        elif category in ['YGN']:
+            # Sort items by `CN` and `Title`
+            split_items = split_items.sort_values(by=['CN', 'TITLE'])
+
+        elif category in ['Childrens FRN', 'Adult FRN']:
+            # Sort items by `CN` and `Title`
+            split_items['Order'] = pd.Categorical(
+                split_items['MEDIA'],
+                categories=["BOOKS", "PAPERBACK BOOKS"],
+                ordered=True)
+            split_items = split_items.sort_values(by=['Order', 'MEDIA', 'CN'])
+
+
+        elif category in ['ENF']:
+            # Sort items by `CN` and ignore startwith E, J 
+            split_items['Order'] = split_items['CN'].apply(utils.extract_or_keep_value)
+            split_items = split_items.sort_values(by=['Order', 'CN'])
+
+
+        elif category == 'Audio':
             # Add `Order` for preferred Order
             # Sort "ADULT NON-FICTION" items 
             split_items['Order'] = pd.Categorical(
@@ -141,10 +171,6 @@ def split_items_to_shelf(df:pd.DataFrame,
             split_items = split_items.sort_values(by=['Order', 'CN', 'AUTHOR'],
                                                   ascending=[False, True, True],
                                                   na_position='first')
-
-        elif category in ['JFiction', 'YA', 'YGN', 'SEQ (High/Middle)']:
-            # Sort items by `Author`
-            split_items = split_items.sort_values(by=['AUTHOR', 'CN'])
 
         elif category in ['Children Audio', 'AEB']:
             # Sort items in the order [Easy, Reader, Early Chapter, 
