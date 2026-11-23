@@ -1,10 +1,5 @@
 import os
 
-Path = 'C:/Users/helen.dinh/OneDrive - Metropolitan Library System/Desktop/My Projects/34. Shelf-by-shelf list for EE'
-Save_data_folder = 'save_data'
-Data_folder = 'data'
-
-
 Categories = {
     'Childrens FRN': {'LOCATION': ['JUVENILE FOREIGN LANGUAGE']},
     'Adult FRN': {'LOCATION': ['FOREIGN LANGUAGE']},
