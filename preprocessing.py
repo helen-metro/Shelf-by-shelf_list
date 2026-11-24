@@ -214,8 +214,10 @@ def split_items_to_shelf(df:pd.DataFrame,
         # Remove the columns `LOCCODE` and `Order`
         if 'LOCCODE' in split_items.columns:
             split_items.drop(['LOCCODE'], axis=1, inplace=True)
-        # if 'Order' in split_items.columns:
-        #     split_items.drop(['Order'], axis=1, inplace=True)
+        if 'Order' in split_items.columns:
+            split_items.drop(['Order'], axis=1, inplace=True)
+        if 'Order1' in split_items.columns:
+            split_items.drop(['Order1'], axis=1, inplace=True)
 
 
         # Calculate the chunk size by shelf number
