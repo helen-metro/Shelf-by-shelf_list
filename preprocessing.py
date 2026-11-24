@@ -8,6 +8,8 @@ import seaborn as sns
 from datetime import datetime 
 import zipfile
 
+from natsort import natsort_keygen
+
 import utils 
 import add_page_break
 from category import Categories, Exceptional_categories 
@@ -199,14 +201,18 @@ def split_items_to_shelf(df:pd.DataFrame,
             
             split_items['Order1'] = split_items['CN'].apply(utils.extract_the_rest)
             # Sort items by `Location` and `CN`
-            split_items = split_items.sort_values(by=['Order', 
-                                                      'Order1', # 'LOCATION', 'CN', 
+            split_items = split_items.sort_values(by=['Order', 'Order1', # 'LOCATION', 'CN', 
                                                       'TITLE'],
                                                 ascending=[True, True, True])
 
         elif category in ['DVD']:
             split_items['Order'] = split_items['CN'].apply(utils.extract_the_rest)
             split_items = split_items.sort_values(by=['Order', 'TITLE', 'CN'])
+
+        elif category in ['EGN']:
+            split_items['Order'] = split_items['CN'].apply(utils.extract_the_rest)
+            split_items = split_items.sort_values(by=['Order', 'TITLE', 'CN'],
+                                                  key=natsort_keygen())
 
         else:
             # Sort all other categories by `Category` and `CN`  
@@ -216,10 +222,12 @@ def split_items_to_shelf(df:pd.DataFrame,
         # Remove the columns `LOCCODE` and `Order`
         if 'LOCCODE' in split_items.columns:
             split_items.drop(['LOCCODE'], axis=1, inplace=True)
+        # """
         if 'Order' in split_items.columns:
             split_items.drop(['Order'], axis=1, inplace=True)
         if 'Order1' in split_items.columns:
             split_items.drop(['Order1'], axis=1, inplace=True)
+        # """
 
 
         # Calculate the chunk size by shelf number

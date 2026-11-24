@@ -89,3 +89,10 @@ def extract_the_rest(value):
         _, _, res = str_val.partition(match.group(0))
         return res
     return str_val # str_val.split(" ", 1)[1]
+
+
+def split_volumne_value(values):
+    """
+    """
+    # val = str(values)
+    return [int(val) if val.isdigit() else val for val in re.split(r"(\d+)", values)]
