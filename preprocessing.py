@@ -148,14 +148,15 @@ def split_items_to_shelf(df:pd.DataFrame,
             # Sort items by `CN` and `Title`
             split_items['Order'] = pd.Categorical(
                 split_items['MEDIA'],
-                categories=["BOOKS", "PAPERBACK BOOKS"],
+                categories=["BOARD BOOKS", "BOOKS", "PAPERBACK BOOKS"],
                 ordered=True)
             split_items = split_items.sort_values(by=['Order', 'MEDIA', 'CN'])
 
 
         elif category in ['ENF']:
             # Sort items by `CN` and ignore startwith E, J 
-            split_items['Order'] = split_items['CN'].apply(utils.extract_or_keep_value)
+            # split_items['Order'] = split_items['CN'].apply(utils.extract_the_rest_string)
+            split_items['Order'] = split_items['CN'].apply(utils.extract_the_rest)
             split_items = split_items.sort_values(by=['Order', 'CN'])
 
 
@@ -188,12 +189,22 @@ def split_items_to_shelf(df:pd.DataFrame,
         elif category in ['Children DVD']:
             # Add `Order` for preferred Order
             # Sort by order "Easy", "Juvenile FF/TVShow", "Nonfiction"
+            
             split_items['Order'] = pd.Categorical(
                 split_items['LOCATION'], 
                 categories=["E", "JFF", "JNF"],
                 ordered=True)
+            
+            split_items['Order1'] = split_items['CN'].apply(utils.extract_the_rest)
             # Sort items by `Location` and `CN`
-            split_items = split_items.sort_values(by=['Order', 'LOCATION', 'CN'])
+            split_items = split_items.sort_values(by=['Order', 
+                                                      'Order1', # 'LOCATION', 'CN', 
+                                                      'TITLE'],
+                                                ascending=[True, True, True])
+
+        elif category in ['DVD']:
+            split_items['Order'] = split_items['CN'].apply(utils.extract_the_rest)
+            split_items = split_items.sort_values(by=['Order', 'TITLE', 'CN'])
 
         else:
             # Sort all other categories by `Category` and `CN`  
@@ -203,8 +214,8 @@ def split_items_to_shelf(df:pd.DataFrame,
         # Remove the columns `LOCCODE` and `Order`
         if 'LOCCODE' in split_items.columns:
             split_items.drop(['LOCCODE'], axis=1, inplace=True)
-        if 'Order' in split_items.columns:
-            split_items.drop(['Order'], axis=1, inplace=True)
+        # if 'Order' in split_items.columns:
+        #     split_items.drop(['Order'], axis=1, inplace=True)
 
 
         # Calculate the chunk size by shelf number
