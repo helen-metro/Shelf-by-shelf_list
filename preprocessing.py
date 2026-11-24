@@ -178,7 +178,7 @@ def split_items_to_shelf(df:pd.DataFrame,
             # Early Graphic, Juvenile Fiction, Juvenile Graphic, 
             # Early Nonfiction, Juvenile Nonfiction] 
             split_items['Order'] = pd.Categorical(
-                split_items['LOCATION'], 
+                split_items['LOCCODE'], 
                 categories=["E", "R", "EC", "EGN",
                             "JF", "JGN", "ENF", "JNF"],
                 ordered=True)
@@ -191,8 +191,10 @@ def split_items_to_shelf(df:pd.DataFrame,
             # Sort by order "Easy", "Juvenile FF/TVShow", "Nonfiction"
             
             split_items['Order'] = pd.Categorical(
-                split_items['LOCATION'], 
-                categories=["E", "JFF", "JNF"],
+                split_items['LOCCODE'], 
+                # categories=["E", "JFF", "JNF"],
+                categories=["E", "EC", "ENF", 
+                            "JF", "JFF", "JNF"],
                 ordered=True)
             
             split_items['Order1'] = split_items['CN'].apply(utils.extract_the_rest)
